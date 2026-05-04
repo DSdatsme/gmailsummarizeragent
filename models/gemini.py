@@ -2,14 +2,14 @@ import json
 import sys
 import requests
 from .base import BaseClassifier
-from .openrouter import _SYSTEM_PROMPT
+from .prompt import SYSTEM_PROMPT
 
 
 class GeminiClassifier(BaseClassifier):
     def __init__(self, api_key: str, model: str, key_senders: str, excluded_topics: str):
         self.api_key = api_key
         self.model = model
-        self.system_prompt = _SYSTEM_PROMPT.format(
+        self.system_prompt = SYSTEM_PROMPT.format(
             key_senders=key_senders,
             excluded_topics=excluded_topics,
         )
@@ -18,14 +18,9 @@ class GeminiClassifier(BaseClassifier):
         if not emails:
             return []
 
-        email_list = "\n".join(
-            f"{i+1}. Account: {e.get('account', '')} | From: {e['from']} | Subject: {e['subject']} | Snippet: {e.get('snippet', '')}"
-            for i, e in enumerate(emails)
-        )
-
         payload = {
             "system_instruction": {"parts": [{"text": self.system_prompt}]},
-            "contents": [{"parts": [{"text": f"Classify these emails:\n\n{email_list}"}]}],
+            "contents": [{"parts": [{"text": f"Classify these emails:\n\n{self.format_emails(emails)}"}]}],
             "generationConfig": {
                 "responseMimeType": "application/json",
                 "temperature": 0,

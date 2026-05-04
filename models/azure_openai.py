@@ -2,7 +2,7 @@ import json
 import sys
 from openai import AzureOpenAI
 from .base import BaseClassifier
-from .openrouter import _SYSTEM_PROMPT
+from .prompt import SYSTEM_PROMPT
 
 
 class AzureOpenAIClassifier(BaseClassifier):
@@ -13,7 +13,7 @@ class AzureOpenAIClassifier(BaseClassifier):
             api_version="2024-02-01",
         )
         self.deployment = deployment
-        self.system_prompt = _SYSTEM_PROMPT.format(
+        self.system_prompt = SYSTEM_PROMPT.format(
             key_senders=key_senders,
             excluded_topics=excluded_topics,
         )
@@ -22,16 +22,11 @@ class AzureOpenAIClassifier(BaseClassifier):
         if not emails:
             return []
 
-        email_list = "\n".join(
-            f"{i+1}. Account: {e.get('account', '')} | From: {e['from']} | Subject: {e['subject']} | Snippet: {e.get('snippet', '')}"
-            for i, e in enumerate(emails)
-        )
-
         response = self.client.chat.completions.create(
             model=self.deployment,
             messages=[
                 {"role": "system", "content": self.system_prompt},
-                {"role": "user", "content": f"Classify these emails:\n\n{email_list}"},
+                {"role": "user", "content": f"Classify these emails:\n\n{self.format_emails(emails)}"},
             ],
             response_format={"type": "json_object"},
             temperature=0,
