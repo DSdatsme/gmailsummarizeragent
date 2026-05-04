@@ -21,6 +21,7 @@ jobs:
         run: |
           TITLE=$(TZ='Asia/Kolkata' date +'Gmail Filer %-d %B, %Y %I:%M %p')
           echo "title=$TITLE" >> "$GITHUB_OUTPUT"
+          echo "## $TITLE" >> "$GITHUB_STEP_SUMMARY"
 
       - uses: actions/checkout@v4
         with:
@@ -65,7 +66,4 @@ jobs:
 
       - name: Output run title
         if: always()
-        run: |
-          TITLE="${{ steps.dt.outputs.title }}"
-          echo "$TITLE"
-          echo "## $TITLE" >> "$GITHUB_STEP_SUMMARY"
+        run: echo "${{ steps.dt.outputs.title }}"
