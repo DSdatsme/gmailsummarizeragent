@@ -26,7 +26,11 @@ class GeminiClassifier(BaseClassifier):
         payload = {
             "system_instruction": {"parts": [{"text": self.system_prompt}]},
             "contents": [{"parts": [{"text": f"Classify these emails:\n\n{email_list}"}]}],
-            "generationConfig": {"responseMimeType": "application/json", "temperature": 0},
+            "generationConfig": {
+                "responseMimeType": "application/json",
+                "temperature": 0,
+                "thinkingConfig": {"thinkingBudget": 0},
+            },
         }
 
         resp = requests.post(
