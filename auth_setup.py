@@ -18,3 +18,4 @@ env_key = f"GMAIL_{account.upper().replace('-', '_')}_REFRESH_TOKEN"
 print(f"\nAdd this to config.env or Secret Manager for account '{account}':")
 print(f"{env_key}={creds.refresh_token}")
 print(f"\n(GMAIL_CLIENT_ID and GMAIL_CLIENT_SECRET are shared — only set them once)")
+print("\nWARNING: This token grants Gmail read access. Do not log, share, or commit this value.")

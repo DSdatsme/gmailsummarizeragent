@@ -15,10 +15,13 @@ class TelegramChannel(BaseChannel):
         )
         text = f"*📬 Critical Emails*\n\n{lines}"
 
-        resp = requests.post(
-            f"https://api.telegram.org/bot{self.bot_token}/sendMessage",
-            json={"chat_id": self.chat_id, "parse_mode": "Markdown", "text": text},
-            timeout=10,
-        )
-        if not resp.ok:
-            print(f"TELEGRAM_FAIL: {resp.text}", file=sys.stderr)
+        try:
+            resp = requests.post(
+                f"https://api.telegram.org/bot{self.bot_token}/sendMessage",
+                json={"chat_id": self.chat_id, "parse_mode": "Markdown", "text": text},
+                timeout=10,
+            )
+            if not resp.ok:
+                print("TELEGRAM_FAIL: non-OK response", file=sys.stderr)
+        except requests.RequestException:
+            print("TELEGRAM_FAIL: request error", file=sys.stderr)

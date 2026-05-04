@@ -1,5 +1,13 @@
 config.env
 credentials.json
+token.json
 __pycache__/
 *.pyc
 .env
+.env.*
+venv/
+.venv/
+*.log
+*.egg-info/
+dist/
+build/
