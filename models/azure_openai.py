@@ -2,21 +2,17 @@ import json
 import sys
 from openai import AzureOpenAI
 from .base import BaseClassifier
-from .prompt import SYSTEM_PROMPT
 
 
 class AzureOpenAIClassifier(BaseClassifier):
     def __init__(self, endpoint: str, api_key: str, deployment: str, key_senders: str, excluded_topics: str):
+        super().__init__(key_senders=key_senders, excluded_topics=excluded_topics)
         self.client = AzureOpenAI(
             azure_endpoint=endpoint,
             api_key=api_key,
             api_version="2024-02-01",
         )
         self.deployment = deployment
-        self.system_prompt = SYSTEM_PROMPT.format(
-            key_senders=key_senders,
-            excluded_topics=excluded_topics,
-        )
 
     def classify(self, emails: list[dict]) -> list[dict]:
         if not emails:

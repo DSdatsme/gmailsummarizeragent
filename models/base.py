@@ -1,7 +1,14 @@
 from abc import ABC, abstractmethod
+from .prompt import SYSTEM_PROMPT
 
 
 class BaseClassifier(ABC):
+    def __init__(self, key_senders: str, excluded_topics: str):
+        self.system_prompt = SYSTEM_PROMPT.format(
+            key_senders=key_senders,
+            excluded_topics=excluded_topics,
+        )
+
     @abstractmethod
     def classify(self, emails: list[dict]) -> list[dict]:
         """Takes list of email dicts, returns list of critical email dicts."""
