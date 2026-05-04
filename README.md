@@ -52,7 +52,10 @@ config.env.example    # copy to config.env for local runs
 
 ### 2. Generate refresh tokens
 
-Run once per Gmail account, **on your local machine** (requires a browser for the OAuth consent screen):
+Run once per Gmail account:
+
+> [!NOTE]
+> This must be run on your local machine — it opens a browser for the OAuth consent screen.
 
 ```bash
 pip install -r requirements.txt
