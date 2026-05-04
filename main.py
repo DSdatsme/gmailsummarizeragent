@@ -42,7 +42,19 @@ def main():
         for channel in channels:
             channel.notify(critical)
 
-    print(f"{len(all_emails)} emails checked across {len(fetchers)} account(s), {len(critical)} critical, {len(channels) if critical else 0} notifications sent.")
+    notifications_sent = len(channels) if critical else 0
+    summary = (
+        f"- **Accounts checked:** {len(fetchers)}\n"
+        f"- **Emails fetched:** {len(all_emails)}\n"
+        f"- **Critical emails:** {len(critical)}\n"
+        f"- **Notifications sent:** {notifications_sent}"
+    )
+    print(summary)
+
+    step_summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if step_summary:
+        with open(step_summary, "a") as f:
+            f.write(summary + "\n")
 
 
 if __name__ == "__main__":
