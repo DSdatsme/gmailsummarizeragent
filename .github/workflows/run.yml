@@ -25,13 +25,13 @@ jobs:
           # config (non-sensitive)
           MODEL_PROVIDER: ${{ vars.MODEL_PROVIDER }}
           MODEL: ${{ vars.MODEL }}
-          GMAIL_ACCOUNTS: ${{ vars.GMAIL_ACCOUNTS }}
           LOOKBACK_HOURS: ${{ vars.LOOKBACK_HOURS }}
           KEY_SENDERS: ${{ vars.KEY_SENDERS }}
-          EXCLUDED_TOPICS: ${{ vars.EXCLUDED_TOPICS }}
           NOTIFY_CHANNELS: ${{ vars.NOTIFY_CHANNELS }}
           AZURE_OPENAI_DEPLOYMENT: ${{ vars.AZURE_OPENAI_DEPLOYMENT }}
           # secrets
+          GMAIL_ACCOUNTS: ${{ secrets.GMAIL_ACCOUNTS }}
+          EXCLUDED_TOPICS: ${{ secrets.EXCLUDED_TOPICS }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
