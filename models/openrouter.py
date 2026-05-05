@@ -1,5 +1,3 @@
-import json
-import sys
 from openai import OpenAI
 from .base import BaseClassifier
 
@@ -27,9 +25,4 @@ class OpenRouterClassifier(BaseClassifier):
             temperature=0,
         )
 
-        try:
-            result = json.loads(response.choices[0].message.content)
-            return result.get("critical", [])
-        except (json.JSONDecodeError, KeyError) as e:
-            print(f"CLASSIFY_PARSE_ERROR: {e}", file=sys.stderr)
-            return []
+        return self._parse_critical(response.choices[0].message.content)

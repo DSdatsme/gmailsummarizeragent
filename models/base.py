@@ -1,3 +1,5 @@
+import json
+import sys
 from abc import ABC, abstractmethod
 from .prompt import SYSTEM_PROMPT
 
@@ -12,6 +14,15 @@ class BaseClassifier(ABC):
     @abstractmethod
     def classify(self, emails: list[dict]) -> list[dict]:
         """Takes list of email dicts, returns list of critical email dicts."""
+
+    @staticmethod
+    def _parse_critical(text: str) -> list[dict]:
+        try:
+            result = json.loads(text)
+            return result.get("critical", [])
+        except (json.JSONDecodeError, KeyError) as e:
+            print(f"CLASSIFY_PARSE_ERROR: {e}", file=sys.stderr)
+            return []
 
     @staticmethod
     def format_emails(emails: list[dict]) -> str:

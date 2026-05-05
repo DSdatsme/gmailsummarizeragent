@@ -1,4 +1,3 @@
-import json
 import sys
 import requests
 from .base import BaseClassifier
@@ -34,8 +33,7 @@ class GeminiClassifier(BaseClassifier):
 
         try:
             text = resp.json()["candidates"][0]["content"]["parts"][0]["text"]
-            result = json.loads(text)
-            return result.get("critical", [])
-        except (KeyError, json.JSONDecodeError) as e:
+        except KeyError as e:
             print(f"CLASSIFY_PARSE_ERROR: {e}", file=sys.stderr)
             return []
+        return self._parse_critical(text)
