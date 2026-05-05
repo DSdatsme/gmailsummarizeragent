@@ -9,7 +9,7 @@ run-name: Gmail Filer - Run #${{ github.run_number }}
 
 on:
   schedule:
-    - cron: "40 4 * * *"   # 10:10 AM IST — adjust to your timezone
+    - cron: "40 4 * * *"   # adjust to your desired UTC time
   workflow_dispatch:
 
 jobs:
@@ -19,7 +19,7 @@ jobs:
       - name: Compute datetime
         id: dt
         run: |
-          TITLE=$(TZ='Asia/Kolkata' date +'Gmail Filer %-d %B, %Y %I:%M %p')
+          TITLE=$(TZ='${{ vars.TIMEZONE }}' date +'Gmail Filer %-d %B, %Y %I:%M %p')
           echo "title=$TITLE" >> "$GITHUB_OUTPUT"
           echo "## $TITLE" >> "$GITHUB_STEP_SUMMARY"
 
@@ -50,6 +50,7 @@ jobs:
           EXCLUDED_TOPICS: ${{ vars.EXCLUDED_TOPICS }}      # comma-separated topics to skip
           KEY_SENDERS: ${{ vars.KEY_SENDERS }}              # comma-separated domains/addresses always marked critical
           TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID }}
+          TIMEZONE: ${{ vars.TIMEZONE }}                    # e.g. Asia/Kolkata, America/New_York, Europe/London
 
           # --- Secrets (sensitive, set as GitHub Actions Secrets) ---
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}

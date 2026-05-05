@@ -2,6 +2,8 @@
 
 Fetches emails from multiple Gmail accounts, classifies them for criticality using an LLM, and sends a consolidated notification. Runs automatically on a schedule via GitHub Actions.
 
+> Read the full write-up: [I Built a Free AI Filter for Multiple Gmail Accounts](https://medium.com/@dsdatsme/i-built-a-free-ai-filter-for-multiple-gmail-accounts-9c61f88f6829)
+
 ## How it works
 
 ```
@@ -31,9 +33,9 @@ main.py               # orchestrator
 gmail.py              # Gmail API fetcher
 auth_setup.py         # one-time OAuth2 token generator
 models/
-  openrouter.py       # OpenRouter classifier (default)
+  gemini.py           # Gemini classifier (recommended)
+  openrouter.py       # OpenRouter classifier
   azure_openai.py     # Azure OpenAI classifier
-  gemini.py           # Gemini direct API classifier
 channels/
   telegram.py         # Telegram notification channel
 config.env.example    # copy to config.env for local runs
@@ -58,7 +60,7 @@ Run once per Gmail account:
 > This must be run on your local machine — it opens a browser for the OAuth consent screen.
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.lock
 python auth_setup.py personal     # opens browser for OAuth consent
 python auth_setup.py work
 # repeat for each account
@@ -121,11 +123,12 @@ GitHub Actions logs are visible to anyone for public repos. Using a private runn
 | `NOTIFY_CHANNELS` | `telegram` |
 | `GMAIL_ACCOUNTS` | `personal,work` |
 | `GMAIL_CLIENT_ID` | from `credentials.json` |
-| `AZURE_OPENAI_ENDPOINT` | your Azure endpoint URL |
-| `AZURE_OPENAI_DEPLOYMENT` | your deployment name |
+| `AZURE_OPENAI_ENDPOINT` | your Azure endpoint URL (Azure only) |
+| `AZURE_OPENAI_DEPLOYMENT` | your deployment name (Azure only) |
 | `KEY_SENDERS` | `example.com` |
 | `EXCLUDED_TOPICS` | `newsletter, marketing` |
 | `TELEGRAM_CHAT_ID` | your Telegram chat ID |
+| `TIMEZONE` | `Asia/Kolkata`, `America/New_York`, etc. |
 
 5. Set the following **Secrets** (Settings → Secrets and variables → Actions → Secrets):
 
@@ -138,7 +141,10 @@ GitHub Actions logs are visible to anyone for public repos. Using a private runn
 | `AZURE_OPENAI_API_KEY` | Azure OpenAI key |
 | `TELEGRAM_BOT_TOKEN` | from @BotFather |
 
-6. Adjust the cron schedule in the workflow file to your preferred time
+6. Adjust the cron schedule in the workflow file to your preferred time. The built-in `schedule:` trigger works fine for most use cases. If you need more reliable timing (GitHub's cron can delay by an hour or more on low-traffic repos), use an external trigger instead:
+   - **cron-job.org** — free, no cloud account needed, POSTs to GitHub's `workflow_dispatch` API
+   - **AWS EventBridge** — if you're already on AWS; a Connection + API Destination + Rule, all within the free tier
+
 7. Trigger a manual run to verify everything works
 
 ## Adding a new Gmail account
